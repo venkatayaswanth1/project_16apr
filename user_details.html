@@ -1,0 +1,125 @@
+<!--<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link rel="stylesheet" href="/static/style1.css" type="text/css">
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="success-message">{{ message }}</div>
+    {% endfor %}
+{% endif %}
+    <div class="userpage">
+        <div class="userdetails">
+            <h1>Welcome, {{user.username }}</h1>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Mobile:</strong> {{ user.customer.mobile }}</p>
+            <p><strong>Travelling Card Number:</strong> {{user.customer.cardid}} </p>
+            <p><strong>Card Balance:</strong> {{user.customer.balance}}</p>
+            <svg id="barcode"></svg>
+        </div>
+
+        <div class="links">
+            <ul>
+                <li><a href="{% url 'pay' %}">Add Money to the Card</a></li>
+                <li><a href="{%url 'transaction_history'%}">View Transaction History</a></li>
+                <li><a href="{% url 'delete' %}">Delete Account</a></li>
+            </ul>
+        </div>
+    </div>
+    -->
+
+    <!-- Include script tag for JsBarcode after the HTML elements -->
+<!--    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <script>
+        // Check if the card ID is 'not issued' before generating the barcode
+        {% if user.customer.cardid != 'not issued' %}
+            // Generate barcode based on the unique ID
+            JsBarcode("#barcode", "{{user.customer.cardid}}", {
+                format: "CODE128",
+                displayValue: true // Show the text representation of the barcode
+            });
+        {% endif %}
+    </script>
+</body>
+</html>
+-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link rel="stylesheet" href="/static/style1.css" type="text/css">
+    <script>
+        function sendTransactionDetails() {
+        fetch('/send_transaction_email/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}',
+            },
+            body: JSON.stringify({}),
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Transaction details sent successfully!');
+            } else {
+                alert('Failed to send transaction details: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    </script>
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="success-message">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    <div class="userpage">
+        <div class="userdetails">
+            <h1>Welcome, {{user.username }}</h1>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Mobile:</strong> {{ user.customer.mobile }}</p>
+            <p><strong>Travelling Card Number:</strong> {{user.customer.cardid}} </p>
+            <p><strong>Card Balance:</strong> {{user.customer.balance}}</p>
+            <svg id="barcode"></svg>
+        </div>
+
+        <div class="links">
+            <ul>
+                {% if user.customer.cardid != 'not issued' %}
+                    <li><a href="{% url 'pay' %}">Add Money to the Card</a></li>
+                {% else %}
+                    <li><span style="color: red;">Card is not issued. Please wait for apploval.</span></li>
+                {% endif %}
+                <li><a href="{%url 'transaction_history'%}">View Transaction History</a></li>
+                <li><a href="{% url 'delete' %}">Delete Account</a></li>
+                
+            </ul>
+        </div>
+    </div>
+
+    <!-- Include script tag for JsBarcode after the HTML elements -->
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.0/dist/JsBarcode.all.min.js"></script>
+    <script>
+        // Check if the card ID is 'not issued' before generating the barcode
+        {% if user.customer.cardid != 'not issued' %}
+            // Generate barcode based on the unique ID
+            JsBarcode("#barcode", "{{user.customer.cardid}}", {
+                format: "CODE128",
+                displayValue: true // Show the text representation of the barcode
+            });
+        {% endif %}
+    </script>
+</body>
+</html>
