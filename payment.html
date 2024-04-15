@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details</title>
+    <link rel="stylesheet" href="/static/style2.css" type="text/css" >
+  <style>
+
+body, html {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+}
+
+.userpage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* Style the form container */
+form {
+    width: 400px;
+    background-color: #f2f2f2;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style the form heading */
+form h1 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+/* Style the form input fields */
+form input[type="text"], form select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Style the form submit button */
+form button[type="submit"] {
+    width: 100%;
+    padding: 10px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* Style the form submit button on hover */
+form button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Style the error message */
+.error-message {
+    color: red;
+    font-size: 12px;
+    margin-top: -10px;
+    margin-bottom: 10px;
+}
+
+  </style>
+</head>
+<body>
+    {% if messages %}
+    {% for message in messages %}
+        <div class="success-message">{{ message }}</div>
+    {% endfor %}
+    {% endif %}
+    <div class="userpage">
+
+    <form action="{% url 'add_money' %}" method="post">
+            {% csrf_token %}
+    <div class="userdetails">
+    <h1>Add Money to {{user.customer.cardid }} Card</h1>
+    <p><strong>CARD NUMBER:</strong><input type="text" id="creditCardNumber" name="creditCardNumber" pattern="[0-9]{13,16}" maxlength="16" placeholder="Enter your credit card number" required>
+    </p>
+    <p><strong>Expiry Date:</strong><select id="expiryMonth" name="expiryMonth" required>
+        <option value="" disabled selected>Month</option>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option>
+        <option value="11">November</option>
+        <option value="12">December</option>
+        
+    </select>
+    
+    <select id="expiryYear" name="expiryYear" required>
+        <option value="" disabled selected>Year</option>
+        <option value="2024">2024</option>
+        <option value="2025">2025</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+        <option value="2028">2028</option>
+
+
+        <!-- Add options for desired years -->
+    </select>
+     </p>
+    <p> <strong>Cvv:</strong> <input type="text" id="cvv" name="cvv" pattern="[0-9]{3,4}" maxlength="4" placeholder="CVV" required>
+    </p>
+    <p> <strong> Enter Amount:</strong><input type="number" id="amount" name="amount" pattern="[0-9]+" placeholder="Amount in Rupees" required>
+    </p>
+    <button type="submit" class="button">Pay</button>
+    </div>
+
+
+</form>
+
+    </div>
+    <script>
+        function disableMonths() {
+            var yearSelect = document.getElementById("expiryYear");
+            var monthSelect = document.getElementById("expiryMonth");
+            var selectedYear = yearSelect.value;
+
+            // If the selected year is 2024, disable January, February, and March
+            if (selectedYear === "2024") {
+                for (var i = 1; i <= 3; i++) {
+                    monthSelect.options[i].disabled = true;
+                }
+            } else {
+                // Enable all months
+                for (var i = 1; i <= 3; i++) {
+                    monthSelect.options[i].disabled = false;
+                }
+            }
+        }
+    </script>
+</body>
+</html>
